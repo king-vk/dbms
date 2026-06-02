@@ -1,0 +1,53 @@
+CREATE TABLE students1 (
+    student_id NUMBER,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    marks NUMBER
+);
+
+INSERT INTO students1 VALUES (101, 'Raj', 'Sharma', 90);
+INSERT INTO students1 VALUES (102, 'Raj', 'Kumar', 85);
+INSERT INTO students1 VALUES (103, 'Shiva', 'Kumar', 75);
+
+COMMIT;
+
+
+
+
+
+
+
+DECLARE
+    CURSOR c_students1 IS
+        SELECT student_id, first_name, last_name, marks
+        FROM students1;
+
+    v_student_rec c_students1%ROWTYPE;
+BEGIN
+    OPEN c_students1;
+
+    LOOP
+        FETCH c_students1 INTO v_student_rec;
+        EXIT WHEN c_students1%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'ID: ' || v_student_rec.student_id ||
+            ' Name: ' || v_student_rec.first_name ||
+            ' ' || v_student_rec.last_name ||
+            ' Marks: ' || v_student_rec.marks
+        );
+    END LOOP;
+
+    CLOSE c_students1;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        IF c_students1%ISOPEN THEN
+            CLOSE c_students1;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'An error occurred: ' || SQLERRM
+        );
+END;
+/
